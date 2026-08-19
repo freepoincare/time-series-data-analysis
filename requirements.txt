@@ -1,0 +1,6 @@
+# Add project dependencies here.
+# Example:
+# pandas==2.x.x
+# matplotlib==3.x.x
+# seaborn==0.x.x
+# jupyter==1.x.x
