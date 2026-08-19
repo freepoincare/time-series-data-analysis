@@ -1,4 +1,4 @@
-# AI Data Analysis: Data-Driven Trend Analysis
+# AI Data Analysis: Data-Driven Trend Analysis [![starline](https://raw.githubusercontent.com/qoomon/qoomon/refs/heads/main/starlines/qoomon/5dfcdf8eec66a051ecd85625518cfd13@gist/starline.svg)](https://github.com/qoomon/starline)
 
 ## 1. Project Overview
 
