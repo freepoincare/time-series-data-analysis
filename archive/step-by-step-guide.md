@@ -269,7 +269,8 @@ Python 3.10 이상을 사용합니다.
 프로젝트 폴더에서 가상환경을 사용하는 것을 권장합니다.
 
 ```bash
-python -m venv .venv
+python -m venv .venv    # 또는
+python3 -m venv .venv
 ```
 
 가상환경을 활성화합니다.
@@ -280,7 +281,7 @@ macOS/Linux:
 source .venv/bin/activate
 ```
 
-Windows:
+Windows (Git Bash):
 
 ```bash
 .venv\Scripts\activate
@@ -319,60 +320,23 @@ import pandas as pd
 
 df = pd.read_csv("../data/raw/my_dataset.csv")
 
-df.head()
+df.head()   # 데이터가 제대로 읽혔는지 확인
 ```
-
-데이터가 제대로 읽혔는지 확인합니다.
 
 ---
 
 # Step 9. 데이터 기본 정보 확인
 
-다음 내용을 확인합니다.
-
-### 데이터 크기
+다음 내용을 확인하며 데이터가 정확히 어떤 상태인지 이해.
 
 ```python
-df.shape
+df.shape # 데이터 크기; 최소 100개 이상의 데이터 포인트가 있는지 확인.
+df.columns # 컬럼
+df.info() # 데이터 타입
+df.describe() # 통계 정보
+df.isnull().sum() # 결측치
+df.duplicated().sum() # 중복 데이터
 ```
-
-최소 100개 이상의 데이터 포인트가 있는지 확인합니다.
-
-### 컬럼
-
-```python
-df.columns
-```
-
-### 데이터 타입
-
-```python
-df.info()
-```
-
-### 통계 정보
-
-```python
-df.describe()
-```
-
-### 결측치
-
-```python
-df.isnull().sum()
-```
-
-### 중복 데이터
-
-```python
-df.duplicated().sum()
-```
-
-이 단계의 목적은:
-
-> **"내 데이터가 정확히 어떤 상태인지 이해하는 것"**
-
-입니다.
 
 ---
 
@@ -438,16 +402,14 @@ df["Value"] = df["Value"].interpolate()
 
 ```text
 결측치가 연속적인 시계열 데이터에서 소수 존재했기 때문에
-선형 보간법을 사용하여 값을 추정하였다.
+선형 보간법(linear interpolation)을 사용하여 값을 추정하였다.
 ```
 
 ---
 
 # Step 12. 이상치 확인
 
-이상치가 있는지 확인합니다.
-
-기본적인 방법으로 boxplot을 사용할 수 있습니다.
+이상치가 있는지 확인. 기본적인 방법으로 boxplot을 사용.
 
 ```python
 df["Value"].plot(kind="box")

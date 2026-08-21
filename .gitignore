@@ -7,8 +7,8 @@ env/
 .DS_Store
 
 # Local/generated data
-data/processed/*
-!data/processed/.gitkeep
+#data/processed/*
+#!data/processed/.gitkeep
 
 # Generated images
 images/*
