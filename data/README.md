@@ -1,8 +1,8 @@
 # 데이터 (Data)
 
-## 원본 데이터 (Raw Data)
+## 1. 원본 데이터 (Raw Data)
 
-원본 데이터셋은 `data/raw/` 폴더에 저장되어 있습니다.
+원본 데이터셋은 `data/raw/` 폴더에 저장되어 있다.
 
 * **원본 파일:** `data/raw/dataset_original.csv`
 * **출처:** [기상청 기상자료개방포털 – 종관기상관측(ASOS) 자료](https://data.kma.go.kr/data/grnd/selectAsosRltmList.do?pgmNo=36)
@@ -20,10 +20,55 @@
 
 > **KMA:** Korea Meteorological Administration (기상청)
 
+---
 
-## 전처리 데이터 (Processed Data)
+<details>
+<summary>[관측 지점 상세]</summary>
+<br>
 
-정제 및 변환된 데이터셋은 `data/processed/` 폴더에 저장되어 있습니다.
+<p align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="../images/data/branch_details_1.png" width="500">
+      </td>
+      <td align="center">
+        <img src="../images/data/branch_details_2.png" width="493">
+      </td>
+    </tr>
+  </table>
+</p>
+
+<br>
+</details>
+
+---
+
+<details>
+<summary>[수집 방법 캡처]</summary>
+<br>
+
+<p align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="../images/data/data_portal_1.png" width="500">
+      </td>
+      <td align="center">
+        <img src="../images/data/data_portal_2.png" width="500">
+      </td>
+    </tr>
+  </table>
+</p>
+
+<br>
+</details>
+
+---
+
+## 2. 전처리 데이터 (Processed Data)
+
+정제 및 변환된 데이터셋은 `data/processed/` 폴더에 저장되어 있다.
 
 * **정제 및 변환 후 파일:** `data/processed/dataset_cleaned.csv`
 
