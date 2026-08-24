@@ -274,7 +274,7 @@ elif selected_tab == "Temperature Trends":
             yaxis_title="Temperature (°C)",
             hovermode="x unified",
             template="plotly_white",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(orientation="h", yanchor="bottom", y=0.97, xanchor="right", x=1),
             margin=dict(l=40, r=40, t=60, b=40),
             height=480
         )
@@ -317,7 +317,7 @@ elif selected_tab == "Temperature Trends":
             yaxis_title="Temperature (°C)",
             hovermode="x unified",
             template="plotly_white",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(orientation="h", yanchor="bottom", y=0.97, xanchor="right", x=1),
             margin=dict(l=40, r=40, t=60, b=40),
             height=480
         )
@@ -353,7 +353,7 @@ elif selected_tab == "Temperature Trends":
             yaxis_title="Temperature (°C)",
             hovermode="x unified",
             template="plotly_white",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(orientation="h", yanchor="bottom", y=0.97, xanchor="right", x=1),
             margin=dict(l=40, r=40, t=60, b=40),
             height=480
         )
@@ -402,7 +402,7 @@ elif selected_tab == "Temperature Trends":
             yaxis_title="Average Temperature (°C)",
             hovermode="x unified",
             template="plotly_white",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(orientation="h", yanchor="bottom", y=0.97, xanchor="right", x=1),
             margin=dict(l=40, r=40, t=60, b=40),
             height=480
         )
@@ -465,7 +465,7 @@ elif selected_tab == "Extreme Heat (≥35°C)":
         xaxis_title="Year",
         yaxis_title="Number of Days",
         template="plotly_white",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        legend=dict(orientation="h", yanchor="bottom", y=0.97, xanchor="right", x=1),
         margin=dict(l=40, r=40, t=60, b=40),
         height=480
     )
