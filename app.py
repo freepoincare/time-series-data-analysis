@@ -33,7 +33,29 @@ def load_all_data():
 
     annual_temp = pd.read_csv(DATA_PROCESSED_DIR / "annual_temperature.csv")
     annual_35 = pd.read_csv(DATA_PROCESSED_DIR / "annual_over_35.csv")
-    monthly_chars = pd.read_csv(DATA_PROCESSED_DIR / "monthly_temperature_characteristics.csv")
+    # Support both monthly_ratio.csv (new) and monthly_temperature_characteristics.csv (legacy)
+    if (DATA_PROCESSED_DIR / "monthly_ratio.csv").exists():
+        monthly_chars = pd.read_csv(DATA_PROCESSED_DIR / "monthly_ratio.csv")
+    elif (DATA_PROCESSED_DIR / "monthly_temperature_characteristics.csv").exists():
+        monthly_chars = pd.read_csv(DATA_PROCESSED_DIR / "monthly_temperature_characteristics.csv")
+    else:
+        # Compute dynamically from dataset_processed if neither exists
+        monthly_chars = (
+            dataset_processed.groupby(["year", "month"])
+            .agg(
+                summer_like_ratio=("summer_like", "mean"),
+                winter_like_ratio=("winter_like", "mean")
+            )
+            .reset_index()
+            .query("not (year == 2026 and month == 8)")
+        )
+
+    # Ensure percentage columns exist
+    if "summer_like_percent" not in monthly_chars.columns and "summer_like_ratio" in monthly_chars.columns:
+        monthly_chars["summer_like_percent"] = monthly_chars["summer_like_ratio"] * 100.0
+    if "winter_like_percent" not in monthly_chars.columns and "winter_like_ratio" in monthly_chars.columns:
+        monthly_chars["winter_like_percent"] = monthly_chars["winter_like_ratio"] * 100.0
+
     trend_results = pd.read_csv(DATA_PROCESSED_DIR / "trend_analysis_results.csv")
     seasonal_results = pd.read_csv(DATA_PROCESSED_DIR / "seasonal_expansion_trend_results.csv")
     arima_forecast = pd.read_csv(DATA_PROCESSED_DIR / "arima_summer_forecast.csv")
