@@ -123,7 +123,7 @@ if selected_tab == "Overview":
     with col1:
         st.metric(
             label="100-Year Annual Warming",
-            value="+2.95 °C",
+            value="+2.60 °C",
             delta="Linear OLS (p < 0.001)",
             help="Annual average temperature warming rate per 100 years."
         )
@@ -131,9 +131,9 @@ if selected_tab == "Overview":
     with col2:
         st.metric(
             label="Winter vs. Summer Warming",
-            value="1.63x Faster",
-            delta="Winter: +2.85°C | Summer: +1.75°C",
-            help="Winter temperatures warm at +2.85°C/century vs Summer at +1.75°C/century."
+            value="1.71x Faster",
+            delta="Winter: +2.90°C | Summer: +1.69°C",
+            help="Winter temperatures warm at +2.90°C/century vs Summer at +1.69°C/century."
         )
 
     with col3:
@@ -160,7 +160,7 @@ if selected_tab == "Overview":
         {
             "id": 1,
             "q": "1. Has Seoul's summer temperature increased significantly over the long term?",
-            "a": "**Finding:** **Yes.** Summer average temperatures (June–August) have risen by **+1.75°C per 100 years** (Linear OLS $p = 5.47 \\times 10^{-12}$, Mann-Kendall Sen's slope = $+0.0181^\\circ\\text{C}/\\text{yr}$, $p < 0.001$), confirming a statistically significant structural warming trend."
+            "a": "**Finding:** **Yes.** Summer average temperatures (June–August) have risen by **+1.69°C per 100 years** (Linear OLS $p = 2.49 \\times 10^{-11}$, Mann-Kendall Sen's slope = $+0.0175^\\circ\\text{C}/\\text{yr}$, $p < 0.001$), confirming a statistically significant structural warming trend."
         },
         {
             "id": 2,
@@ -170,7 +170,7 @@ if selected_tab == "Overview":
         {
             "id": 3,
             "q": "3. What is the difference between summer and winter warming rates?",
-            "a": "**Finding:** **Asymmetric Warming.** Winter temperatures warmed at **+2.85°C / 100 years**, which is **1.63 times faster** than summer warming (+1.75°C / 100 years)."
+            "a": "**Finding:** **Asymmetric Warming.** Winter temperatures warmed at **+2.90°C / 100 years**, which is **1.71 times faster** than summer warming (+1.69°C / 100 years; Sen's slope ratio is also 1.71x)."
         },
         {
             "id": 4,

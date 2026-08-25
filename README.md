@@ -37,11 +37,12 @@ time-series-analysis/
 ├── images/                                  # 분석 및 시각화 이미지
 │   └── plots/                               # 파이프라인에서 생성된 통계 차트 (01~15)
 ├── notebooks/                               # 단계별 탐색적 데이터 분석 (Jupyter Notebooks)
+│   ├── 0_intro.ipynb                        # 프로젝트 소개 및 가이드
 │   ├── 1_EDA_preprocessing.ipynb            # 데이터 정제, EDA 및 이상치 검정
 │   ├── 2_descriptive_analysis.ipynb         # 기술 통계 및 연도/계절별 집계
 │   ├── 3_trend_analysis.ipynb               # 이동평균, 선형회귀 및 Mann-Kendall 검정
-│   ├── 4_seasonal-expansion_analysis.ipynb  # 환절기 계절 확장/축소 분석
-│   └── 5_summer_forecasting.ipynb           # ARIMA 및 선형회귀 여름 기온 5년 예측
+│   ├── 4_seasonal_expansion_analysis.ipynb  # 환절기 계절 확장/축소 분석
+│   └── 5_prediction.ipynb                   # ARIMA 및 선형회귀 여름 기온 5년 예측
 ├── src/                                     # 모듈화된 핵심 소스 코드
 │   ├── data_cleaning.py                     # 결측치/이상치 처리 및 파생변수 생성
 │   ├── data_loader.py                       # 데이터 로딩 및 인코딩 처리
@@ -82,7 +83,7 @@ time-series-analysis/
 3. **추세 분석 (`3_trend_analysis.ipynb` / `src/time_series_analysis.py`):**
    - 10년 이동평균을 통한 기저 기온 상승 추세 규명
    - OLS 선형 회귀 및 비모수 Mann-Kendall 검정, Sen's Slope 산출
-4. **계절 전이월 확장 분석 (`4_seasonal-expansion_analysis.ipynb`):**
+4. **계절 전이월 확장 분석 (`4_seasonal_expansion_analysis.ipynb`):**
    - 일평균 20°C 이상(여름다운 날), 5°C 이하(겨울다운 날) 기준 전이월(5·9·11·3월) 비율 추세 분석
 5. **여름철 기온 예측 (`5_prediction.ipynb`):**
    - ADF 단위근 검정 기반 정상성 확보 후 ARIMA(0,1,1) 및 선형 회귀 모델 구축
@@ -143,7 +144,7 @@ python analysis.py
 1. **인터랙티브 컨트롤:**
    - **연도 범위 슬라이더 (1907~2026):** 원하는 과거 기간을 자유롭게 설정하여 통계 및 차트 실시간 재계산
    - **기온 변수 토글:** 연평균, 연최저, 연최고 기온 선택 및 비교
-   - **계절/월 선택 필터:** 전이월(5월, 9월, 3월, 11월)별 비율 변화, 히트맵, 30년 주기(1907~1936 vs 1997~2026) 비교
+   - **계절/월 선택 필터:** 전이월(5월, 9월, 3월, 11월)별 비율 변화, 히트맵, 28년 주기(1908~1935 vs 1998~2025) 비교
    - **예측 모델 비교:** ARIMA(0,1,1)과 선형 회귀 예측선 및 95% 신뢰구간 인터랙티브 전환
 2. **Plotly 인터랙티브 시각화:**
    - 마우스 호버(Hover) 시 연도, 월, 기온, 비율(%) 등 상세 툴팁 제공
