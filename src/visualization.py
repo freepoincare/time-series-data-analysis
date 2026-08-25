@@ -227,14 +227,20 @@ def plot_winter_heatmap(monthly_ratio: pd.DataFrame, save_path: Optional[Path] =
 
 
 def plot_seasonal_expansion_comparison(df: pd.DataFrame, save_path: Optional[Path] = None):
-    """Compare summer-like and winter-like percentages between early (1907-1936) and recent (1997-2026) periods."""
+    """Compare summer-like and winter-like percentages between early (1908-1935) and recent (1998-2025) periods."""
     early = df[df["year"].between(1908, 1935)]
     recent = df[df["year"].between(1998, 2025)]
 
-    early_summer = early.groupby("month")["summer_like"].mean() * 100
-    recent_summer = recent.groupby("month")["summer_like"].mean() * 100
-    early_winter = early.groupby("month")["winter_like"].mean() * 100
-    recent_winter = recent.groupby("month")["winter_like"].mean() * 100
+    if "summer_like_percent" in df.columns:
+        early_summer = early.groupby("month")["summer_like_percent"].mean()
+        recent_summer = recent.groupby("month")["summer_like_percent"].mean()
+        early_winter = early.groupby("month")["winter_like_percent"].mean()
+        recent_winter = recent.groupby("month")["winter_like_percent"].mean()
+    else:
+        early_summer = early.groupby("month")["summer_like"].mean() * 100
+        recent_summer = recent.groupby("month")["summer_like"].mean() * 100
+        early_winter = early.groupby("month")["winter_like"].mean() * 100
+        recent_winter = recent.groupby("month")["winter_like"].mean() * 100
 
     months = list(range(1, 13))
 

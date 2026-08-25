@@ -118,7 +118,7 @@ def run_pipeline():
 
     viz.plot_summer_heatmap(monthly_chars, PLOTS_DIR / "11_summer_like_heatmap.png")
     viz.plot_winter_heatmap(monthly_chars, PLOTS_DIR / "12_winter_like_heatmap.png")
-    viz.plot_seasonal_expansion_comparison(processed_df, PLOTS_DIR / "13_seasonal_expansion_comparison.png")
+    viz.plot_seasonal_expansion_comparison(monthly_chars, PLOTS_DIR / "13_seasonal_expansion_comparison.png")
 
     # -------------------------------------------------------------------------
     # Step 5: Forecasting (Linear Regression & ARIMA)
