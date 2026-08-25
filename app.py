@@ -346,10 +346,16 @@ elif selected_tab == "Temperature Trends":
         st.plotly_chart(fig, use_container_width=True)
 
     elif trend_mode == "Linear Regression Trendline (Annual Avg)":
-        x = df_annual_filtered["year"]
-        y = df_annual_filtered["avg_temp"]
-        slope, intercept, r_val, p_val, std_err = stats.linregress(x, y)
-        trend_line = intercept + slope * x
+        valid_annual = df_annual_filtered.dropna(subset=["avg_temp"])
+        x = valid_annual["year"]
+        y = valid_annual["avg_temp"]
+
+        if len(valid_annual) >= 2:
+            slope, intercept, r_val, p_val, std_err = stats.linregress(x, y)
+            trend_line = intercept + slope * x
+        else:
+            slope, intercept, r_val, p_val, std_err = np.nan, np.nan, np.nan, np.nan, np.nan
+            trend_line = pd.Series(dtype=float)
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(
@@ -360,14 +366,15 @@ elif selected_tab == "Temperature Trends":
             marker=dict(color="#1f2937", size=6, opacity=0.7),
             hovertemplate="<b>Year:</b> %{x}<br><b>Observed:</b> %{y:.2f} °C<extra></extra>"
         ))
-        fig.add_trace(go.Scatter(
-            x=x,
-            y=trend_line,
-            mode="lines",
-            name=f"Linear Trend (Slope: {slope:.4f} °C/yr, p={p_val:.3e})",
-            line=dict(color="#dc2626", width=2.5),
-            hovertemplate="<b>Year:</b> %{x}<br><b>Trendline:</b> %{y:.2f} °C<extra></extra>"
-        ))
+        if len(valid_annual) >= 2:
+            fig.add_trace(go.Scatter(
+                x=x,
+                y=trend_line,
+                mode="lines",
+                name=f"Linear Trend (Slope: {slope:.4f} °C/yr, p={p_val:.3e})",
+                line=dict(color="#dc2626", width=2.5),
+                hovertemplate="<b>Year:</b> %{x}<br><b>Trendline:</b> %{y:.2f} °C<extra></extra>"
+            ))
 
         fig.update_layout(
             title=f"Linear Trend of Annual Average Temperature ({year_range[0]}–{year_range[1]})",
@@ -456,10 +463,16 @@ elif selected_tab == "Extreme Heat (≥35°C)":
         """
     )
 
-    x_35 = df_35_filtered["year"]
-    y_35 = df_35_filtered["days_over_35"]
-    slope_35, intercept_35, r_35, p_35, _ = stats.linregress(x_35, y_35)
-    trend_35 = intercept_35 + slope_35 * x_35
+    valid_35 = df_35_filtered.dropna(subset=["days_over_35"])
+    x_35 = valid_35["year"]
+    y_35 = valid_35["days_over_35"]
+
+    if len(valid_35) >= 2:
+        slope_35, intercept_35, r_35, p_35, _ = stats.linregress(x_35, y_35)
+        trend_35 = intercept_35 + slope_35 * x_35
+    else:
+        slope_35, intercept_35, r_35, p_35 = np.nan, np.nan, np.nan, np.nan
+        trend_35 = pd.Series(dtype=float)
 
     fig = go.Figure()
     fig.add_trace(go.Bar(
@@ -473,14 +486,15 @@ elif selected_tab == "Extreme Heat (≥35°C)":
         ),
         hovertemplate="<b>Year:</b> %{x}<br><b>Heatwave Days (≥35°C):</b> %{y} days<extra></extra>"
     ))
-    fig.add_trace(go.Scatter(
-        x=x_35,
-        y=trend_35,
-        mode="lines",
-        name=f"Linear Trend (Slope: {slope_35:.4f} d/yr, p={p_35:.3f})",
-        line=dict(color="#7f1d1d", width=2.5),
-        hovertemplate="<b>Year:</b> %{x}<br><b>Fitted Trend:</b> %{y:.2f} days<extra></extra>"
-    ))
+    if len(valid_35) >= 2:
+        fig.add_trace(go.Scatter(
+            x=x_35,
+            y=trend_35,
+            mode="lines",
+            name=f"Linear Trend (Slope: {slope_35:.4f} d/yr, p={p_35:.3f})",
+            line=dict(color="#7f1d1d", width=2.5),
+            hovertemplate="<b>Year:</b> %{x}<br><b>Fitted Trend:</b> %{y:.2f} days<extra></extra>"
+        ))
 
     fig.update_layout(
         title=f"Annual Number of Days with Tmax ≥ 35°C ({year_range[0]}–{year_range[1]})",
@@ -766,6 +780,7 @@ elif selected_tab == "5-Year Forecast":
         .groupby("year")["tavg"]
         .mean()
         .reset_index(name="summer_avg_temp")
+        .dropna(subset=["summer_avg_temp"])
     )
 
     forecast_model_choice = st.radio(
