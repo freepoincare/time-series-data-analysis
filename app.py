@@ -632,14 +632,15 @@ elif selected_tab == "Seasonal Expansion":
             st.plotly_chart(fig_w, use_container_width=True)
 
     elif season_view == "Early vs. Recent Era Comparison":
-        st.subheader("🗓️ 30-Year Era Shift: 1907–1936 vs. 1997–2026")
-        early = df_daily[df_daily["year"].between(1907, 1936)]
-        recent = df_daily[df_daily["year"].between(1997, 2026)]
+        st.subheader("🗓️ 28-Year Era Shift: 1908–1935 vs. 1998–2025")
 
-        early_summer = early.groupby("month")["summer_like"].mean() * 100
-        recent_summer = recent.groupby("month")["summer_like"].mean() * 100
-        early_winter = early.groupby("month")["winter_like"].mean() * 100
-        recent_winter = recent.groupby("month")["winter_like"].mean() * 100
+        early_mc = df_monthly[df_monthly["year"].between(1908, 1935)]
+        recent_mc = df_monthly[df_monthly["year"].between(1998, 2025)]
+
+        early_summer = early_mc.groupby("month")["summer_like_percent"].mean()
+        recent_summer = recent_mc.groupby("month")["summer_like_percent"].mean()
+        early_winter = early_mc.groupby("month")["winter_like_percent"].mean()
+        recent_winter = recent_mc.groupby("month")["winter_like_percent"].mean()
 
         months = list(range(1, 13))
         month_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -650,18 +651,18 @@ elif selected_tab == "Seasonal Expansion":
             fig_es = go.Figure()
             fig_es.add_trace(go.Scatter(
                 x=month_labels,
-                y=early_summer.loc[months].values,
+                y=[early_summer.get(m, 0) for m in months],
                 mode="lines+markers",
-                name="1907–1936 (Early Era)",
+                name="1908–1935 (Early Era)",
                 line=dict(color="#475569", width=2.2),
                 marker=dict(size=6),
                 hovertemplate="<b>Month:</b> %{x}<br><b>Early Era Summer-like:</b> %{y:.1f}%<extra></extra>"
             ))
             fig_es.add_trace(go.Scatter(
                 x=month_labels,
-                y=recent_summer.loc[months].values,
+                y=[recent_summer.get(m, 0) for m in months],
                 mode="lines+markers",
-                name="1997–2026 (Recent Era)",
+                name="1998–2025 (Recent Era)",
                 line=dict(color="#dc2626", width=2.5),
                 marker=dict(size=7),
                 hovertemplate="<b>Month:</b> %{x}<br><b>Recent Era Summer-like:</b> %{y:.1f}%<extra></extra>"
@@ -682,18 +683,18 @@ elif selected_tab == "Seasonal Expansion":
             fig_ew = go.Figure()
             fig_ew.add_trace(go.Scatter(
                 x=month_labels,
-                y=early_winter.loc[months].values,
+                y=[early_winter.get(m, 0) for m in months],
                 mode="lines+markers",
-                name="1907–1936 (Early Era)",
+                name="1908–1935 (Early Era)",
                 line=dict(color="#475569", width=2.2),
                 marker=dict(size=6),
                 hovertemplate="<b>Month:</b> %{x}<br><b>Early Era Winter-like:</b> %{y:.1f}%<extra></extra>"
             ))
             fig_ew.add_trace(go.Scatter(
                 x=month_labels,
-                y=recent_winter.loc[months].values,
+                y=[recent_winter.get(m, 0) for m in months],
                 mode="lines+markers",
-                name="1997–2026 (Recent Era)",
+                name="1998–2025 (Recent Era)",
                 line=dict(color="#2563eb", width=2.5),
                 marker=dict(size=7),
                 hovertemplate="<b>Month:</b> %{x}<br><b>Recent Era Winter-like:</b> %{y:.1f}%<extra></extra>"
@@ -941,7 +942,7 @@ elif selected_tab == "5-Year Forecast":
             **ARIMA(0,1,1) Model:**
             - **MAE:** `0.959 °C` (Superior precision)
             - **RMSE:** `1.164 °C`
-            - **Stationarity:** 1st differenced series satisfies ADF test ($p = 0.0039$).
+            - **Stationarity:** 1st differenced series satisfies ADF test ($p = 4.11 \times 10^{-21}$).
             """
         )
     with val_col2:
@@ -950,7 +951,7 @@ elif selected_tab == "5-Year Forecast":
             **Linear Regression Model:**
             - **MAE:** `1.370 °C`
             - **RMSE:** `1.513 °C`
-            - **Trend Slope:** $+0.0175^\circ\text{C}/\text{yr}$ ($+1.75^\circ\text{C}/100\text{yr}$)
+            - **Trend Slope:** $+0.0169^\circ\text{C}/\text{yr}$ ($+1.69^\circ\text{C}/100\text{yr}$)
             """
         )
 
