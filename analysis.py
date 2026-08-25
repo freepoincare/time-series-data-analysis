@@ -5,7 +5,16 @@ forecasting, and plot generation, saving all outputs to data/processed/ and imag
 """
 
 import os
+import sys
 from pathlib import Path
+
+# Configure utf-8 encoding for Windows standard output
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
 
 from src.data_loader import load_raw_data, load_processed_data
 from src.data_cleaning import clean_data, transform_data, find_iqr_outliers
@@ -72,11 +81,13 @@ def run_pipeline():
     annual_temp.to_csv(PROCESSED_DATA_DIR / "annual_temperature.csv", index=False, encoding="utf-8-sig")
 
     seasonal_pivot = calculate_seasonal_temperature(processed_df)
+    seasonal_pivot.to_csv(PROCESSED_DATA_DIR / "seasonal_temperature.csv", index=False, encoding="utf-8-sig")
+
     annual_35 = calculate_annual_over_35(processed_df)
     annual_35.to_csv(PROCESSED_DATA_DIR / "annual_over_35.csv", index=False, encoding="utf-8-sig")
 
     monthly_chars = calculate_monthly_characteristics(processed_df)
-    monthly_chars.to_csv(PROCESSED_DATA_DIR / "monthly_temperature_characteristics.csv", index=False, encoding="utf-8-sig")
+    monthly_chars.to_csv(PROCESSED_DATA_DIR / "monthly_ratio.csv", index=False, encoding="utf-8-sig")
 
     # Descriptive plots
     viz.plot_annual_temperature_history(annual_temp, PLOTS_DIR / "05_annual_temperature_history.png")

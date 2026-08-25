@@ -28,6 +28,7 @@ from scipy import stats
 
 def plot_raw_time_series(df: pd.DataFrame, save_path: Optional[Path] = None):
     """Plot raw daily temperature time series (tavg, tmax, tmin)."""
+    df["date"] = pd.to_datetime(df["date"], format="%d/%m/%Y")
     fig, ax = plt.subplots(figsize=(12, 5))
     ax.plot(df["date"], df["tavg"], color="black", label="Avg Temperature", alpha=0.7, linewidth=0.8)
     ax.plot(df["date"], df["tmax"], 'r--', label="Max Temperature", alpha=0.6, linewidth=0.5)
@@ -99,9 +100,12 @@ def plot_annual_temperature_history(annual_temp: pd.DataFrame, save_path: Option
 def plot_summer_winter_temperature(seasonal_pivot: pd.DataFrame, save_path: Optional[Path] = None):
     """Plot historical Summer vs Winter average temperature."""
     fig, ax = plt.subplots(figsize=(12, 5))
-    ax.plot(seasonal_pivot["year"], seasonal_pivot["Summer"], label="Summer", color="red", alpha=0.8)
-    ax.plot(seasonal_pivot["year"], seasonal_pivot["Winter"], label="Winter", color="blue", alpha=0.8)
-    ax.set_xlabel("Year")
+    x_col = "season_year" if "season_year" in seasonal_pivot.columns else "year"
+    summer_col = "summer_avg_temp" if "summer_avg_temp" in seasonal_pivot.columns else "Summer"
+    winter_col = "winter_avg_temp" if "winter_avg_temp" in seasonal_pivot.columns else "Winter"
+    ax.plot(seasonal_pivot[x_col], seasonal_pivot[summer_col], label="Summer", color="red", alpha=0.8)
+    ax.plot(seasonal_pivot[x_col], seasonal_pivot[winter_col], label="Winter", color="blue", alpha=0.8)
+    ax.set_xlabel("Season Year" if x_col == "season_year" else "Year")
     ax.set_ylabel("Average Temperature (°C)")
     ax.set_title("Summer and Winter Average Temperature in Seoul")
     ax.legend()
@@ -142,18 +146,20 @@ def plot_moving_average_trend(annual_temp: pd.DataFrame, save_path: Optional[Pat
 
 def plot_linear_trend(annual_temp: pd.DataFrame, save_path: Optional[Path] = None):
     """Plot annual temperature with linear regression trendline."""
-    fig, ax = plt.subplots(figsize=(12, 5))
-    x = annual_temp["year"]
-    y = annual_temp["avg_temp"]
+    clean_df = annual_temp.dropna(subset=["avg_temp"]).sort_values("year")
+    x = clean_df["year"]
+    y = clean_df["avg_temp"]
     slope, intercept, r_val, p_val, _ = stats.linregress(x, y)
     trend_line = intercept + slope * x
 
+    fig, ax = plt.subplots(figsize=(12, 5))
     ax.scatter(x, y, s=15, color="black", alpha=0.6, label="Annual Average Temperature")
     ax.plot(x, trend_line, color="red", linewidth=2, label=f"Linear Trend (slope={slope:.4f}°C/year, p={p_val:.4g})")
     ax.set_xlabel("Year")
     ax.set_ylabel("Temperature (°C)")
     ax.set_title("Linear Trend of Annual Average Temperature in Seoul")
     ax.legend()
+    plt.grid(True, alpha=0.3)
     plt.tight_layout()
     if save_path:
         fig.savefig(save_path, dpi=300)
@@ -162,18 +168,20 @@ def plot_linear_trend(annual_temp: pd.DataFrame, save_path: Optional[Path] = Non
 
 def plot_days_over_35_trend(annual_over_35: pd.DataFrame, save_path: Optional[Path] = None):
     """Plot bar chart of days >= 35°C with linear trend overlay."""
-    fig, ax = plt.subplots(figsize=(12, 5))
-    x = annual_over_35["year"]
-    y = annual_over_35["days_over_35"]
+    clean_df = annual_over_35.dropna(subset=["days_over_35"]).sort_values("year")
+    x = clean_df["year"]
+    y = clean_df["days_over_35"]
     slope, intercept, _, p_val, _ = stats.linregress(x, y)
     trend_line = intercept + slope * x
 
+    fig, ax = plt.subplots(figsize=(12, 5))
     ax.bar(x, y, color="salmon", alpha=0.7, label="Days ≥ 35°C")
     ax.plot(x, trend_line, color="darkred", linewidth=2, label=f"Linear Trend (p={p_val:.4g})")
     ax.set_xlabel("Year")
     ax.set_ylabel("Number of Days")
     ax.set_title("Annual Number of Days with Maximum Temperature ≥ 35°C (with Trend)")
     ax.legend()
+    plt.grid(True, alpha=0.3)
     plt.tight_layout()
     if save_path:
         fig.savefig(save_path, dpi=300)
@@ -220,8 +228,8 @@ def plot_winter_heatmap(monthly_ratio: pd.DataFrame, save_path: Optional[Path] =
 
 def plot_seasonal_expansion_comparison(df: pd.DataFrame, save_path: Optional[Path] = None):
     """Compare summer-like and winter-like percentages between early (1907-1936) and recent (1997-2026) periods."""
-    early = df[df["year"].between(1907, 1936)]
-    recent = df[df["year"].between(1997, 2026)]
+    early = df[df["year"].between(1908, 1935)]
+    recent = df[df["year"].between(1998, 2025)]
 
     early_summer = early.groupby("month")["summer_like"].mean() * 100
     recent_summer = recent.groupby("month")["summer_like"].mean() * 100
@@ -233,8 +241,8 @@ def plot_seasonal_expansion_comparison(df: pd.DataFrame, save_path: Optional[Pat
     fig, axes = plt.subplots(1, 2, figsize=(14, 4))
 
     # Summer-like comparison
-    axes[0].plot(months, early_summer.loc[months], marker="o", label="1907–1936", color="steelblue")
-    axes[0].plot(months, recent_summer.loc[months], marker="o", label="1997–2026", color="firebrick")
+    axes[0].plot(months, early_summer.loc[months], marker="o", label="1908–1935", color="steelblue")
+    axes[0].plot(months, recent_summer.loc[months], marker="o", label="1998–2025", color="firebrick")
     axes[0].set_title("Summer-like Days (%): Early vs Recent")
     axes[0].set_xlabel("Month")
     axes[0].set_ylabel("Summer-like Days (%)")
@@ -242,8 +250,8 @@ def plot_seasonal_expansion_comparison(df: pd.DataFrame, save_path: Optional[Pat
     axes[0].legend()
 
     # Winter-like comparison
-    axes[1].plot(months, early_winter.loc[months], marker="o", label="1907–1936", color="steelblue")
-    axes[1].plot(months, recent_winter.loc[months], marker="o", label="1997–2026", color="firebrick")
+    axes[1].plot(months, early_winter.loc[months], marker="o", label="1908–1935", color="steelblue")
+    axes[1].plot(months, recent_winter.loc[months], marker="o", label="1998–2025", color="firebrick")
     axes[1].set_title("Winter-like Days (%): Early vs Recent")
     axes[1].set_xlabel("Month")
     axes[1].set_ylabel("Winter-like Days (%)")
@@ -266,7 +274,8 @@ def plot_summer_forecast_linear(
 ):
     """Plot historical summer temperature and 5-year Linear Regression forecast."""
     fig, ax = plt.subplots(figsize=(12, 5))
-    x_hist = summer_annual["year"]
+    x_col = "season_year" if "season_year" in summer_annual.columns and "year" not in summer_annual.columns else "year"
+    x_hist = summer_annual[x_col]
     y_hist = summer_annual["summer_avg_temp"]
     trend_line = intercept + slope * x_hist
 

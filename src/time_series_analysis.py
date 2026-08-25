@@ -24,7 +24,10 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 # ---------------------------------------------------------------------------
 
 def calculate_annual_temperature(df: pd.DataFrame) -> pd.DataFrame:
-    """Calculate annual average, minimum, and maximum temperatures."""
+    """Calculate annual average, minimum, and maximum temperatures.
+
+    Incomplete years (1907, 1950, 1951, 1952, 1953, 2026) are marked as NaN.
+    """
     annual_temp = (
         df.groupby("year")
         .agg(
@@ -34,22 +37,37 @@ def calculate_annual_temperature(df: pd.DataFrame) -> pd.DataFrame:
         )
         .reset_index()
     )
+    incomplete_years = [1907, 1950, 1951, 1952, 1953, 2026]
+    annual_temp.loc[
+        annual_temp["year"].isin(incomplete_years),
+        ["avg_temp", "avg_min_temp", "avg_max_temp"]
+    ] = np.nan
     return annual_temp
 
 
 def calculate_seasonal_temperature(df: pd.DataFrame) -> pd.DataFrame:
-    """Calculate seasonal average temperature pivot table for Summer and Winter."""
+    """Calculate seasonal average temperature pivot table for Summer and Winter using season_year."""
+    year_col = "season_year" if "season_year" in df.columns else "year"
     seasonal_temp = (
         df[df["season"].isin(["Summer", "Winter"])]
-        .groupby(["year", "season"])["tavg"]
+        .groupby([year_col, "season"])["tavg"]
         .mean()
         .reset_index()
     )
+    # Exclude incomplete 2026 summer data
+    seasonal_temp = seasonal_temp[
+        ~((seasonal_temp["season"] == "Summer") &
+          (seasonal_temp[year_col] == 2026))
+    ]
     pivot = seasonal_temp.pivot(
-        index="year",
+        index=year_col,
         columns="season",
         values="tavg"
     ).reset_index()
+    pivot = pivot.rename(columns={
+        "Summer": "summer_avg_temp",
+        "Winter": "winter_avg_temp"
+    })
     return pivot
 
 
@@ -59,7 +77,10 @@ def calculate_annual_over_35(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def calculate_monthly_characteristics(df: pd.DataFrame) -> pd.DataFrame:
-    """Calculate monthly summer-like and winter-like day ratios and percentages."""
+    """Calculate monthly summer-like and winter-like day ratios and percentages.
+
+    Excludes incomplete August 2026 data point.
+    """
     monthly = (
         df.groupby(["year", "month"])
         .agg(
@@ -67,6 +88,7 @@ def calculate_monthly_characteristics(df: pd.DataFrame) -> pd.DataFrame:
             winter_like_ratio=("winter_like", "mean")
         )
         .reset_index()
+        .query("not (year == 2026 and month == 8)")
     )
     monthly["summer_like_percent"] = monthly["summer_like_ratio"] * 100.0
     monthly["winter_like_percent"] = monthly["winter_like_ratio"] * 100.0
@@ -84,7 +106,10 @@ def calculate_moving_average(series: pd.Series, window: int = 10) -> pd.Series:
 
 def run_linear_regression(x: pd.Series, y: pd.Series) -> Dict[str, Any]:
     """Perform linear regression and return statistical metrics."""
-    slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+    valid_mask = ~(pd.isna(x) | pd.isna(y))
+    x_clean = pd.Series(x)[valid_mask]
+    y_clean = pd.Series(y)[valid_mask]
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x_clean, y_clean)
     return {
         "slope": slope,
         "intercept": intercept,
@@ -114,29 +139,20 @@ def analyze_all_trends(df: pd.DataFrame) -> pd.DataFrame:
       - Annual Average Temperature
       - Summer Average Temperature
       - Winter Average Temperature
-      - Days >= 35°C
+      - Days ≥ 35°C
     """
-    annual_temp = calculate_annual_temperature(df)
-    annual_35 = calculate_annual_over_35(df)
-
-    summer_temp = (
-        df[df["season"] == "Summer"]
-        .groupby("year")["tavg"]
-        .mean()
-        .reset_index(name="summer_avg_temp")
-    )
-    winter_temp = (
-        df[df["season"] == "Winter"]
-        .groupby("year")["tavg"]
-        .mean()
-        .reset_index(name="winter_avg_temp")
-    )
+    annual_temp = calculate_annual_temperature(df).dropna(subset=["avg_temp"]).sort_values("year")
+    seasonal_temp = calculate_seasonal_temperature(df)
+    year_col = "season_year" if "season_year" in seasonal_temp.columns else "year"
+    summer_clean = seasonal_temp[[year_col, "summer_avg_temp"]].dropna().sort_values(year_col)
+    winter_clean = seasonal_temp[[year_col, "winter_avg_temp"]].dropna().sort_values(year_col)
+    annual_35 = calculate_annual_over_35(df).dropna(subset=["days_over_35"]).sort_values("year")
 
     series_dict = {
         "Annual Average Temperature": (annual_temp["year"], annual_temp["avg_temp"]),
-        "Summer Average Temperature": (summer_temp["year"], summer_temp["summer_avg_temp"]),
-        "Winter Average Temperature": (winter_temp["year"], winter_temp["winter_avg_temp"]),
-        "Days >= 35 degC": (annual_35["year"], annual_35["days_over_35"])
+        "Summer Average Temperature": (summer_clean[year_col], summer_clean["summer_avg_temp"]),
+        "Winter Average Temperature": (winter_clean[year_col], winter_clean["winter_avg_temp"]),
+        "Days ≥ 35°C": (annual_35["year"], annual_35["days_over_35"])
     }
 
     records = []
@@ -212,15 +228,16 @@ def forecast_summer_linear(
     forecast_years: int = 5
 ) -> Tuple[pd.DataFrame, Dict[str, float]]:
     """Forecast future summer average temperature using Linear Regression."""
+    year_col = "season_year" if "season_year" in summer_df.columns and "year" not in summer_df.columns else "year"
     # Fit on all complete years
-    train_df = summer_df[summer_df["year"] < 2026].copy()
+    train_df = summer_df[summer_df[year_col] < 2026].copy()
 
     # Train/test split evaluation on last 5 years
     eval_train = train_df.iloc[:-forecast_years]
     eval_test = train_df.iloc[-forecast_years:]
 
-    slope_eval, intercept_eval, _, _, _ = stats.linregress(eval_train["year"], eval_train["summer_avg_temp"])
-    test_pred = intercept_eval + slope_eval * eval_test["year"]
+    slope_eval, intercept_eval, _, _, _ = stats.linregress(eval_train[year_col], eval_train["summer_avg_temp"])
+    test_pred = intercept_eval + slope_eval * eval_test[year_col]
 
     metrics = {
         "mae": float(mean_absolute_error(eval_test["summer_avg_temp"], test_pred)),
@@ -228,8 +245,8 @@ def forecast_summer_linear(
     }
 
     # Final fit on full dataset
-    slope, intercept, r_value, p_value, std_err = stats.linregress(train_df["year"], train_df["summer_avg_temp"])
-    last_year = int(train_df["year"].max())
+    slope, intercept, r_value, p_value, std_err = stats.linregress(train_df[year_col], train_df["summer_avg_temp"])
+    last_year = int(train_df[year_col].max())
     future_years_arr = np.arange(last_year + 1, last_year + forecast_years + 1)
     future_pred = intercept + slope * future_years_arr
 
@@ -247,8 +264,14 @@ def forecast_summer_arima(
     forecast_years: int = 5
 ) -> Tuple[pd.DataFrame, Dict[str, float], Any]:
     """Forecast future summer average temperature using ARIMA model."""
-    complete_df = summer_df[summer_df["year"] < 2026].copy()
-    ts = complete_df.set_index("year")["summer_avg_temp"]
+    if isinstance(summer_df, pd.Series):
+        ts = summer_df.copy()
+        if 2026 in ts.index:
+            ts = ts.loc[ts.index < 2026]
+    else:
+        year_col = "season_year" if "season_year" in summer_df.columns and "year" not in summer_df.columns else "year"
+        complete_df = summer_df[summer_df[year_col] < 2026].copy()
+        ts = complete_df.set_index(year_col)["summer_avg_temp"]
 
     # Train/test evaluation
     eval_train = ts.iloc[:-forecast_years]
@@ -268,8 +291,11 @@ def forecast_summer_arima(
     forecast_mean = forecast_res.predicted_mean
     conf_int = forecast_res.conf_int()
 
-    last_year = int(ts.index.max())
-    future_years_idx = list(range(last_year + 1, last_year + forecast_years + 1))
+    if isinstance(ts.index, pd.DatetimeIndex):
+        future_years_idx = pd.date_range(start=ts.index.max() + pd.offsets.YearEnd(), periods=forecast_years, freq='A-DEC')
+    else:
+        last_year = int(ts.index.max())
+        future_years_idx = list(range(last_year + 1, last_year + forecast_years + 1))
 
     forecast_df = pd.DataFrame({
         "year": future_years_idx,

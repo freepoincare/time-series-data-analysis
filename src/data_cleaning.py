@@ -1,5 +1,4 @@
-"""Data cleaning and transformation functions."""
-
+import numpy as np
 import pandas as pd
 
 
@@ -31,9 +30,12 @@ def find_iqr_outliers(df: pd.DataFrame, column: str) -> pd.DataFrame:
     outliers = df[(df[column] < lower_bound) | (df[column] > upper_bound)]
 
     print(f"\n{column}")
-    print(f"  Q1: {q1:.2f},  Q3: {q3:.2f},  IQR: {iqr:.2f}")
-    print(f"  Lower bound: {lower_bound:.2f},  Upper bound: {upper_bound:.2f}")
-    print(f"  Number of outliers: {len(outliers)}")
+    print(f"Q1: {q1:.2f}")
+    print(f"Q3: {q3:.2f}")
+    print(f"IQR: {iqr:.2f}")
+    print(f"Lower bound: {lower_bound:.2f}")
+    print(f"Upper bound: {upper_bound:.2f}")
+    print(f"Number of outliers: {len(outliers)}")
 
     return outliers
 
@@ -98,6 +100,7 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
 
     New columns added:
       - year, month, day, day_of_year  – temporal breakdown of 'date'
+      - season_year                    – winter-spanning year (Jan/Feb assigned to year - 1)
       - season                         – meteorological season (Spring/Summer/
                                          Autumn/Winter) based on month
       - summer_like  (0/1)  – tavg >= 20 °C  (KMA summer criterion)
@@ -120,6 +123,9 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
     df["month"] = df["date"].dt.month
     df["day"] = df["date"].dt.day
     df["day_of_year"] = df["date"].dt.dayofyear
+
+    # --- Season year (Jan, Feb assigned to previous year for winter grouping) ---
+    df["season_year"] = np.where(df["month"].isin([1, 2]), df["year"] - 1, df["year"])
 
     # --- Season (meteorological) ---
     def _get_season(month: int) -> str:
@@ -144,9 +150,12 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
 
     print("\n=== Transformed Data Summary ===")
     print(f"Columns: {list(df.columns)}")
-    print(f"Year range: {df['year'].min()} – {df['year'].max()}")
+    print(f"Year range: {df['year'].min()} - {df['year'].max()}")
     print(f"Summer-like days : {df['summer_like'].sum()}")
     print(f"Winter-like days : {df['winter_like'].sum()}")
+    print(f"Warm days (Tmax >= 25°C): {df['warm_day'].sum()}")
+    print(f"Hot days (Tmax >= 30°C): {df['hot_day'].sum()}")
     print(f"Extreme heat days: {df['over_35'].sum()}")
+    print(f"Cold days: {df['cold_day'].sum()}")
 
     return df

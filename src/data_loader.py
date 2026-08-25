@@ -29,8 +29,8 @@ def load_processed_data(file_path: str) -> pd.DataFrame:
     """Load the processed Seoul temperature dataset.
 
     The processed CSV already includes derived columns: year, month, day,
-    day_of_year, season, summer_like, winter_like, warm_day, hot_day,
-    over_35, cold_day.
+    day_of_year, season_year, season, summer_like, winter_like, warm_day,
+    hot_day, over_35, cold_day.
 
     Args:
         file_path: Path to the processed CSV file.
