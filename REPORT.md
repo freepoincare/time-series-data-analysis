@@ -30,7 +30,7 @@
   - `tavg`: 일평균기온 (°C)
   - `tmin`: 일최저기온 (°C)
   - `tmax`: 일최고기온 (°C)
-  - 파생 변수: `year`, `month`, `day`, `day_of_year`, `season_year`, `season`, `summer_like` (tavg ≥ 20°C), `winter_like` (tavg ≤ 5°C), `over_35` (tmax ≥ 35°C), `warm_day` (25 ≤ tmax < 30°C), `hot_day` (30 ≤ tmax < 35°C), `cold_day` (tmax ≤ 10°C & tmin < 0°C)
+  - 파생 변수: `year`, `month`, `day`, `day_of_year`, `season_year`, `season`, `summer_like`, `winter_like`, `over_35`, `warm_day`, `hot_day`, `cold_day`
 - **데이터 수집 방법:** 기상자료개방포털에서 서울(108) 지점, 전체 기간 및 기상 요소(평균·최저·최고기온)를 설정하여 CSV 파일 다운로드 후 프로젝트 저장
 - **라이선스 / 사용 관련 주의사항:** 공공누리 제1유형 (KOGL Type 1 - 출처 표시 시 자유 이용 및 상업적 활용 가능)
 - [데이터 상세 정보](./data/README.md)
@@ -44,6 +44,7 @@
 * **원시 데이터 규격:** 42,236행 × 6개 컬럼 (`station_ID`, `location`, `date`, `tavg`, `tmin`, `tmax`)
 * **변수 타입 변환 및 정제:**
   * 날짜 형식(`DD/MM/YYYY` 문자열)을 표준 `datetime64[ns]` 타입으로 변환 후, 시계열 분석을 위한 파생 변수(`year`, `month`, `day`, `day_of_year`, `season_year`, `season`)를 추출.
+  * `summer_like` (tavg ≥ 20°C), `winter_like` (tavg ≤ 5°C), `over_35` (tmax ≥ 35°C), `warm_day` (25 ≤ tmax < 30°C), `hot_day` (30 ≤ tmax < 35°C), `cold_day` (tmax ≤ 10°C & tmin < 0°C) 생성.
   * 단일 관측소 메타데이터로 정보량이 없는 `station_ID`(108 고정)와 `location`('seoul' 고정) 열을 제거하여 데이터 구조를 효율화.
   * 전체 데이터셋에 대해 중복된 레코드 및 중복 날짜는 0건으로 정합성(consistency)을 확인함.
 
