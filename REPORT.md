@@ -94,7 +94,7 @@
 
 ### 5.4 계절 전이월 확장 분석 (Seasonal Transition Month Expansion Analysis)
 
-* **개요 및 목적:** 달력상의 계절(6~8월, 12~2월)을 넘어 기상학적 기온 기준($\text{tavg} \ge 20^\circ\text{C}$ 여름다운 날, $\text{tavg} \le 5^\circ\text{C}$ 겨울다운 날)으로 봄/가을 전이월(5월, 9월)과 초겨울/초봄 전이월(11월, 3월)의 비율 변화를 분석.
+* **개요 및 목적:** 달력상의 계절(6-8월, 12-2월)을 넘어 기상학적 기온 기준($\text{tavg} \ge 20^\circ\text{C}$ 여름다운 날, $\text{tavg} \le 5^\circ\text{C}$ 겨울다운 날)으로 봄/가을 전이월(5월, 9월)과 초겨울/초봄 전이월(11월, 3월)의 비율 변화를 분석.
 * **주요 결과:**
   * **5월(초여름화):** 여름다운 날 비율 상승률 $+29.41\%p/\text{100yr}$ ($R^2 = 0.505, p = 4.31 \times 10^{-19}$, $\text{Increasing}$, $\text{Sen's Slope} = +0.2867\%p/\text{yr}$)
   * **9월(늦여름화):** 여름다운 날 비율 상승률 $+36.58\%p/\text{100yr}$ ($R^2 = 0.504, p = 9.81 \times 10^{-19}$, $\text{Increasing}$, $\text{Sen's Slope} = +0.3865\%p/\text{yr}$)
