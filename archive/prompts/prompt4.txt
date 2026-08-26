@@ -1,0 +1,42 @@
+[Request]
+
+I have two requests:
+
+(1): In @app.py, under the overview section titled 'Seoul Historical Temperature Analysis (1907–2026)',
+the 'Core Research Questions Addressed' section currently lists 6 questions and answers all at once.
+I'd like to refactor this into an accordion-style component:
+* Display the 6 questions stacked vertically as interactive 'cards'.
+* Clicking a question card expands and reveals its answer directly beneath it.
+* Clicking a new question card collapses the previously open answer so only one answer is displayed at a time.
+
+(2): In @app.py, under the 'Seasonal Boundary Expansion & Contraction' section (elif selected_tab == "Seasonal Expansion":),
+look at the view for 'Select Exploration View:' > 'Monthly Ratio Heatmaps'.
+Currently, the Y-axis years are ordered from bottom to top.
+Please reverse the Y-axis so the years increase from top to bottom (chronological order from top to down).
+
+Thanks!
+
+---
+
+[Answer]
+
+  The two requests from prompt4.txt have been implemented in app.py:
+  ──────
+  ### Summary of Changes
+
+  1. Overview - Single-Open Interactive Question Accordion:
+      • Refactored the Core Research Questions Addressed section in app.py.
+      • The 6 questions are now rendered vertically as stacked cards (st.button with contextual indicators ▶/▼ and dynamic type styling).
+      • Integrated with st.session_state["active_question_id"] so that clicking any question card expands its detailed answer directly underneath while automatically
+      collapsing any previously opened question (only one answer active at a time).
+  2. Seasonal Expansion - Reversed Heatmap Y-Axis (Top-to-Bottom):
+      • In the Seasonal Expansion tab (elif selected_tab == "Seasonal Expansion":) under Monthly Ratio Heatmaps:
+          • Updated both the Summer-like (May–Sep) and Winter-like (Nov–Mar) heatmaps to set origin="upper".
+          • The Y-axis now represents years in top-to-bottom chronological order.
+          • Formatted the X-axis month ticks with clear English labels (May, Jun, Jul, Aug, Sep and Nov, Dec, Jan, Feb, Mar).
+
+
+  ──────
+  ### Verification
+
+  • Tested app.py dry-run execution — verified parsing and data loading with 0 errors.

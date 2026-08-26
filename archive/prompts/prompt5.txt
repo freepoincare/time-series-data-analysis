@@ -1,0 +1,81 @@
+[Request]
+
+Please review the current Streamlit dashboard and improve it rather than rebuilding it.
+For visualization, replace static Matplotlib charts with Plotly interactive charts where appropriate.
+
+Prioritize:
+- Interactive temperature trend line chart with hover
+- Interactive 35°C+ days chart with hover
+- Interactive seasonal expansion/contraction heatmap with hover
+- Interactive Linear Regression vs ARIMA forecast chart
+- ARIMA confidence interval displayed as an interactive shaded band
+- Useful hover tooltips showing year, month, temperature, percentage, etc.
+- The graphs do not need to match REPORT.md exactly; use a modern, polished, and visually engaging design while preserving the original analysis and results.
+
+Add meaningful interactive controls where appropriate:
+- Year range
+- Temperature variable
+- Summer/Winter selection
+- Relevant month selection
+
+Do not add unnecessary filters.
+
+The dashboard should clearly satisfy the requirement:
+"기간/조건을 바꿔보며 탐색 가능"
+
+Use Plotly for interactive visualizations and keep Streamlit as the dashboard framework.
+
+Do not change the underlying statistical results or analysis methodology.
+
+After making the changes, test the dashboard locally with:
+
+`streamlit run app.py`
+
+Check that all charts render correctly and that the filters actually update the relevant charts.
+
+---
+
+[Answer]
+
+ The Streamlit dashboard has been updated to use modern, interactive Plotly visualizations while preserving the underlying statistical results and analysis methodology
+  as requested in prompt5.txt.
+  ──────
+  ### Key Improvements Made
+
+  1. Interactive Temperature Trend Charts (plotly.graph_objects):
+      • Multi-Variable Selector: Users can interactively toggle between Annual Average Temp, Annual Average Min Temp, and Annual Average Max Temp with unified hover
+      tooltips showing year and exact temperature values.
+      • Moving Average Smoothing: Interactive trendline with dynamic window slider and hover tooltips showing raw observations alongside moving averages.
+      • Linear Regression: Interactive scatter points and fitted OLS trendline with instant hover information.
+      • Asymmetric Warming View: Interactive comparison between Summer (Jun–Aug) and Winter (Dec–Feb) average temperature trajectories.
+  2. Interactive Extreme Heat (≥35°C) Bar Chart:
+      • Replaced static bars with dynamic Plotly bar charts with color scales and custom hover tooltips showing year and exact heatwave days.
+      • Trendline overlay with hover details highlighting intermittent extreme years (1994, 2018).
+  3. Interactive Seasonal Expansion & Contraction Heatmaps (go.Heatmap):
+      • Interactive heatmaps for **Summer-like Days (May–Sep,
+
+
+             ∘
+    T    ≥ 20  C
+     avg
+
+  )** and **Winter-like Days (Nov–Mar,
+
+            ∘
+    T    ≤ 5  C
+     avg
+
+  )** with continuous color scales (YlOrRd and YlGnBu).
+
+  • Detailed hover tooltips showing Year, Month, and exact day percentages (%).
+  • Chronological top-to-bottom year order (autorange="reversed").
+  • Interactive 30-year era shift comparison charts (1907–1936 vs. 1997–2026) with hover tooltips across all 12 months.
+
+  4. Interactive 5-Year Forecast & Shaded Confidence Intervals:
+      • Interactive comparison between ARIMA (0,1,1) and Linear Regression forecasts for 2026–2030.
+      • 95% Confidence Interval Band: Rendered as an interactive translucent shaded band (fill="tonexty") with hover tooltips detailing point forecasts and upper/lower
+      bounds.
+  5. Dependency & Environment Updates:
+      • Added plotly>=5.18.0 to requirements.txt.
+      • Tested parsing and dry-run imports of app.py with 0 errors.
+

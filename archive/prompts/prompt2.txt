@@ -1,0 +1,51 @@
+[Request]
+
+Can you please complete @REPORT.md based on the all the analysis made in the files in @notebooks/?
+I have already added visualization plots in that REPORT.
+You can use interpretation I wrote in the files in @notebooks/ and also can complement your opinions if my interpretations were not enough / wrong.
+You can also refer to @docs/analysis_plan.md, @data/README.md and other files to find information and complete @REPORT.md.
+
+---
+
+[Answer]
+
+ prompt2.txt의 요청에 따라 notebooks, analysis_plan.md, README.md 및 분석 파이프라인 산출물(CSV 및 시각화 플롯)의 분석 결과를 기반으로 REPORT.md를 완성했습니다.
+  ──────
+  ### 📊 REPORT.md 주요 작성 내용 요약
+
+  1. 분석 주제 및 질문 정의:
+      • 19072026년(119년간) 서울 기온 데이터를 활용한 장기 온난화 추세 규명, 계절 확장/축소(초여름화·늦여름화 및 겨울 축소) 패턴 진단, 향후 5개년(20262030년) 여름철 기온
+      예측.
+  2. 데이터셋 메타데이터 및 정제 명시:
+      • 기상청 서울(108) 관측소 42,236건 데이터의 파생변수 생성, 한국전쟁 결측치(1950.09~1953.11) 처리 기준, 1.5 × IQR 이상치 검정 결과(이상치 0건, 원본 물리적 극한값
+      유지).
+  3. 시계열 분석 기법 상세화:
+      • 10년 이동평균(Moving Average), 선형 회귀 분석(Linear Regression), 켄달-만 순위 추세 검정(Mann-Kendall Test) & 센 기울기(Sen's Slope), 전이월 계절 확장 분석,
+      ARIMA (0,1,1) 모델링.
+  4. 9개 시각화 플롯 심층 해석:
+      • 연평균 기온 100년당
+
+
+         ∘
+    +2.95  C
+
+  상승 추세 (p = 1.47 × 10⁻¹⁴), 35°C 이상 폭염의 간헐적 극단치 특성, 5월(+29.41%p/100yr) 및 9월(+36.58%p/100yr)의 급격한 여름화와 3월 겨울 축소(-38.17%p/100yr), ARIMA
+  (0,1,1) 기반 미래 5개년 기온 예측(
+
+         ∘
+    25.94  C
+
+  , 95% 구간
+
+                   ∘
+    24.22 sim 27.65  C
+
+  ).
+  5. Actionable 인사이트 (Fact-Evidence-Why-Action):
+
+  • Insight 1: 겨울철이 여름철보다 1.6배 빠르게 따뜻해지는 비대칭적 온난화 → 동절기 인프라 재정비 및 병충해 방제.
+  • Insight 2: 봄·가을의 여름화로 인한 실질적 여름 기간의 확장 → 전력 피크 관리 및 폭염 쉼터 가동 기간 조기화(5월~9월).
+  • Insight 3: 폭염 극단치 특성 및 향후 5개년 고온 지속 → 도심 열섬 완화 인프라 및 슈퍼 폭염 대응 시나리오 고도화.
+
+  6. 결론 및 한계점 정리:
+      • 한국전쟁 결측 공백, 도시 열섬 효과(UHI)와 순수 기후변화 요인의 미분리, 단일 관측소 공간 대표성, 거시 외력 변수 미반영 등 한계점 명시.

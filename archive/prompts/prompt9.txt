@@ -1,0 +1,32 @@
+[Request]
+
+"Please sync @src/*.py with the latest changes in @notebooks/*.ipynb.
+
+Requirements:
+- Read @notebooks/*.ipynb and analyze the updated code and execution outputs.
+- Refactor @src/*.py to match this updated logic exactly.
+- Do not generate additional image files in @images/ other than those 15 images. But just update existing images if necessary.
+- Do not change any plot styling.
+- Keep existing helper functions and clean code structure in @src/ intact while applying the updates.
+
+---
+
+[Answer]
+
+  Now I have enough information to understand the full picture. Let me analyze the key differences between the notebooks and the src files:
+
+  Key differences found:
+
+  1. data_cleaning.py - transform_data(): Notebooks add season_year column (missing from src)
+  2. data_cleaning.py - find_iqr_outliers(): Notebook uses separate prints (Q1, Q3, IQR each on own line) vs combined print in src
+  3. time_series_analysis.py - calculate_annual_temperature(): Notebook marks incomplete years (1907, 1950–1953, 2026) as NaN
+  4. time_series_analysis.py - calculate_seasonal_temperature(): Notebook uses season_year instead of year, renames columns to summer_avg_temp/winter_avg_temp, and
+  excludes 2026 summer
+  5. time_series_analysis.py - calculate_monthly_characteristics(): Notebook excludes 2026 August
+  6. time_series_analysis.py - forecast_summer_linear() and forecast_summer_arima(): Now uses summer_ts_clean (excludes 2026 row via iloc[:-1]), not year < 2026 filter
+  7. time_series_analysis.py - analyze_all_trends(): Uses season_year for summer/winter aggregation
+  8. visualization.py - plot_seasonal_expansion_comparison(): Uses monthly_ratio data (already has summer_like_percent/winter_like_percent) instead of raw df
+  9. visualization.py - plot_summer_winter_temperature(): Uses season_year column, Summer/Winter renamed to summer_avg_temp/winter_avg_temp
+  10. visualization.py - plot_summer_forecast_arima(): Uses summer_ts_clean not sliced index; uses figsize=(10, 5), title changes
+
+  Let me now implement all these changes:
