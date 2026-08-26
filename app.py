@@ -89,8 +89,7 @@ st.sidebar.markdown(
     "<small>Based on Korea Meteorological Administration (KMA) Station #108 (Songwol-dong).</small>",
     unsafe_allow_html=True
 )
-
-st.link_button("💻 View on GitHub", "https://github.com/freepoincare/time-series-data-analysis")
+st.sidebar.link_button("💻 View on GitHub", "https://github.com/freepoincare/time-series-data-analysis")
 
 # Navigation tabs
 tab_options = [
