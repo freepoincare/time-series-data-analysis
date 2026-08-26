@@ -86,8 +86,11 @@ df_arima = data["arima_forecast"]
 st.sidebar.title("🌡️ Seoul Climate Dashboard")
 st.sidebar.markdown(
     "**Time-Series Analysis of Seoul Temperatures (1907–2026)**\n\n"
-    "Based on Korea Meteorological Administration (KMA) Station #108 (Songwol-dong)."
+    "<small>Based on Korea Meteorological Administration (KMA) Station #108 (Songwol-dong).</small>",
+    unsafe_allow_html=True
 )
+
+st.link_button("💻 View on GitHub", "https://github.com/freepoincare/time-series-data-analysis")
 
 # Navigation tabs
 tab_options = [
@@ -187,7 +190,7 @@ if selected_tab == "Overview":
         {
             "id": 2,
             "q": "2. Have extreme heat days (Tmax ≥ 35°C) increased monotonically?",
-            "a": "**Finding:** **No monotonic trend ($p = 0.475$).** Days with $T_{\\text{max}} \\ge 35^\\circ\\text{C}$ do not follow a smooth linear trajectory. Instead, they manifest as severe intermittent outliers concentrated in specific atmospheric blocking/heat-dome years (e.g., 1994 with 29 days, 2018 with 35 days, 2024)."
+            "a": "**Finding:** **No monotonic trend ($p = 0.475$).** Days with $T_{\\text{max}} \\ge 35^\\circ\\text{C}$ do not follow a smooth linear trajectory. Instead, they manifest as severe intermittent outliers concentrated in specific atmospheric blocking/heat-dome years (e.g., 1994, 2018, 2025)."
         },
         {
             "id": 3,
@@ -747,7 +750,7 @@ elif selected_tab == "Seasonal Expansion":
             )
             st.plotly_chart(fig_ew, use_container_width=True)
 
-    st.markdown("### 📊 Transition Month Trend Statistics")
+    st.markdown("### 📊 Transition Month Trend Statistics (1907-2026)")
     st.dataframe(
         df_seasonal.rename(columns={
             "season": "Season Type",
