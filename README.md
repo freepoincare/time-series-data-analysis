@@ -94,7 +94,14 @@ time-series-analysis/
 
 ## 🚀 실행 방법
 
-### 1. 환경 설정 및 패키지 설치
+### 1. 저장소 클론
+
+```bash
+git clone git@github.com:freepoincare/time-series-data-analysis.git
+cd time-series-data-analysis
+```
+
+### 2. 환경 설정 및 패키지 설치
 
 ```bash
 # 가상환경 생성 및 활성화 (선택)
@@ -110,7 +117,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. 전체 분석 파이프라인 일괄 실행
+### 3. 전체 분석 파이프라인 일괄 실행
 
 원시 데이터 전처리부터 모든 통계 분석 및 시각화 차트 생성을 한 번에 실행한다:
 
