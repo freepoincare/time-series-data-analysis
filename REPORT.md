@@ -263,5 +263,5 @@
 | 질문 해결을 위한 시계열 분석 방법 제안 | ChatGPT, Gemini | 분석 대안 탐색, 분석 아이디어 구상 | 제시된 방법의 이론적 타당성 및 적용 가능성 검토 |
 | 시각화 아이디어 제안 | ChatGPT | 시각화 대안 탐색 및 구상 | 데이터 특징 표현에 적합한지 확인 |
 | Jupyter Notebook 코드를 Python 파일로 전환 | Claude, Gemini | 코드 작성 시간 절감 | 코드 및 생성된 그래프 이미지 상호 비교 (Cross-check), 직접 실행 |
-| Jupyter Notebook 내용을 바탕으로 보고서 작성 | Gemini | 시간 절감 | ipynb의 그래프/해석과 대조 확인, 그래프 색상 지칭 오류 수정, 내 해석과의 차이점 점검, 직접 계산을 통한 검증, 최종 리포트 검증 |
+| Jupyter Notebook 내용을 바탕으로 보고서 초안 작성 | Gemini | 시간 절감 | ipynb의 그래프/해석과 대조 확인, 그래프 색상 지칭 오류 수정, 내 해석과의 차이점 점검, 직접 계산을 통한 검증, 최종 리포트 검증 |
 | Streamlit Dashboard 생성 | Claude, Gemini | 시간 절감 | 웹 대시보드 직접 탐색하며 검증 |
