@@ -2,6 +2,7 @@
 
 서울시 장기 일일 기온 데이터를 기반으로 기온 변화의 장기 추세와 계절 변화를 분석하고 예측하는 시계열 분석 프로젝트이다. 35°C 이상 고온일수의 변화, 여름·겨울 기온 및 계절 변화 추세를 분석하고, Linear Regression과 ARIMA를 활용하여 향후 5년간 서울의 여름 평균기온을 예측한다. 또한 분석 결과를 Streamlit 기반의 인터랙티브 대시보드로 구현하여 기간과 조건에 따라 결과를 탐색할 수 있도록 구성하였다.
 
+* 프로젝트 기간: 2026-08-19 ~ 2026-08-25
 * 분석 리포트: [\[REPORT.md\]](REPORT.md)
 * 대시보드 링크: [\[seoul-temperature-analysis.streamlit.app\]](https://seoul-temperature-analysis.streamlit.app/)
 
@@ -61,35 +62,21 @@ time-series-analysis/
 
 본 프로젝트는 원시 데이터 수집부터 최종 웹 서비스 배포까지 총 6단계의 모듈화된 파이프라인으로 구성되어 있다.
 
-```text
-1. 원시 데이터 수집 & 정제 (KMA ASOS #108, 42,236건)
-   ↓
-2. 기술 통계 및 시계열 집계 (연별/계절별/월별 기온 지표 산출)
-   ↓
-3. 장기 추세 통계 분석 (10년 이동평균, OLS 회귀, Mann-Kendall)
-   ↓
-4. 계절 경계 확장/축소 분석 (5월/9월 초·늦여름화, 3월/11월 겨울 축소)
-   ↓
-5. 시계열 예측 모델링 (ARIMA(0,1,1) vs 선형 회귀 5개년 예측)
-   ↓
-6. 대시보드 서비스화 & 리포트 (Streamlit 웹 대시보드 & REPORT.md)
-```
-
-1. **데이터 정제 & 전처리 (`1_EDA_preprocessing.ipynb` / `src/data_cleaning.py`):**
+1. **데이터 수집 및 정제 & 전처리 (`1_EDA_preprocessing.ipynb`):**
    - 날짜 포맷 표준화, 파생 변수(`season`, `summer_like`, `winter_like`, `over_35` 등) 추출
    - 1.5×IQR 기반 이상치 검증 및 한국전쟁(1950~1953) 결측 기간의 보간 배제 처리
-2. **기술 통계 분석 (`2_descriptive_analysis.ipynb`):**
+2. **기술 통계 및 시계열 집계 (`2_descriptive_analysis.ipynb`):**
    - 연평균/최고/최저 기온, 계절별 평균 기온, 폭염(≥35°C) 일수 집계
-3. **추세 분석 (`3_trend_analysis.ipynb` / `src/time_series_analysis.py`):**
+3. **장기 추세 통계 분석 (`3_trend_analysis.ipynb`):**
    - 10년 이동평균을 통한 기저 기온 상승 추세 규명
    - OLS 선형 회귀 및 비모수 Mann-Kendall 검정, Sen's Slope 산출
-4. **계절 전이월 확장 분석 (`4_seasonal_expansion_analysis.ipynb`):**
-   - 일평균 20°C 이상(여름다운 날), 5°C 이하(겨울다운 날) 기준 전이월(5·9·11·3월) 비율 추세 분석
+4. **계절 경계 확장/축소 분석 (`4_seasonal_expansion_analysis.ipynb`):**
+   - 일평균 20°C 이상(여름다운 날), 5°C 이하(겨울다운 날) 기준 전이월(5·9·11·3월) 비율 추세 분석 (5월/9월 초·늦여름화, 3월/11월 겨울 축소)
 5. **여름철 기온 예측 (`5_prediction.ipynb`):**
    - ADF 단위근 검정 기반 정상성 확보 후 ARIMA(0,1,1) 및 선형 회귀 모델 구축
    - 최근 5개년 백테스팅(MAE/RMSE) 평가 및 2026~2030년 95% 예측 구간 산출
 6. **서비스화 및 리포트 작성 (`app.py` / `REPORT.md`):**
-   - Plotly 기반의 인터랙티브 Streamlit 웹 대시보드 구축 및 종합 학술 리포트 작성
+   - Plotly 기반의 인터랙티브 Streamlit 웹 대시보드 구축 및 종합 리포트 작성
 
 ---
 
@@ -101,7 +88,7 @@ time-series-analysis/
   - **통계 & 머신러닝:** `statsmodels`, `scikit-learn`, `pymannkendall`
   - **데이터 시각화:** `matplotlib`, `plotly`
   - **인터랙티브 웹 대시보드:** `streamlit`
-  - **노트북 환경:** `jupyter`
+  - **Notebook 환경:** `jupyter`
 
 ---
 
@@ -132,6 +119,8 @@ python analysis.py
 ```
 > 실행 완료 시 가공 데이터(`data/processed/*.csv`) 및 그래프 이미지(`images/plots/*.png`)가 자동 생성된다.
 
+또는 각 Jupyter Notebook 파일 안에서 상단에 [Run All] 클릭하거나 각 cell를 단계별로 실행.
+
 ---
 
 ## 📊 인터랙티브 웹 대시보드 (Streamlit)
@@ -144,20 +133,21 @@ python analysis.py
 1. **인터랙티브 컨트롤:**
    - **연도 범위 슬라이더 (1907~2026):** 원하는 과거 기간을 자유롭게 설정하여 통계 및 차트 실시간 재계산
    - **기온 변수 토글:** 연평균, 연최저, 연최고 기온 선택 및 비교
-   - **계절/월 선택 필터:** 전이월(5월, 9월, 3월, 11월)별 비율 변화, 히트맵, 28년 주기(1908~1935 vs 1998~2025) 비교
+   - **계절/월 선택 필터:** 전이월(5월, 9월, 3월, 11월)별 비율 변화, 히트맵, 28년 주기(1908-1935 vs 1998-2025) 비교
    - **예측 모델 비교:** ARIMA(0,1,1)과 선형 회귀 예측선 및 95% 신뢰구간 인터랙티브 전환
 2. **Plotly 인터랙티브 시각화:**
    - 마우스 호버(Hover) 시 연도, 월, 기온, 비율(%) 등 상세 툴팁 제공
    - 줌(Zoom), 팬(Pan), 범례 클릭을 통한 개별 계열 표시/숨김 지원
-3. **단일 확장형 핵심 질문 아코디언:**
+3. **단일 확장형 핵심 질문 아코디언(Accordion):**
    - 대시보드 개요 탭에서 6대 핵심 연구 질문 카드를 클릭 시 해당 질문의 통계적 결론이 펼쳐지는 반응형 UI
 
 ### 🖥️ 로컬 실행 방법
 
+(streamlit 설치 필요)
 ```bash
 streamlit run app.py
 ```
-> 명령 실행 후 브라우저가 자동 실행되며 `http://localhost:8501`에서 대시보드를 탐색할 수 있다.
+> 명령 실행 후 브라우저가 자동 실행되며 `http://localhost:8501`에서 대시보드 탐색 가능.
 
 ### ☁️ Streamlit Community Cloud 배포 방법
 
