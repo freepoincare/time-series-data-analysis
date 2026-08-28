@@ -2,7 +2,6 @@
 
 서울시 장기 일일 기온 데이터를 기반으로 기온 변화의 장기 추세와 계절 변화를 분석하고 예측하는 시계열 분석 프로젝트이다. 35°C 이상 고온일수의 변화, 여름·겨울 기온 및 계절 변화 추세를 분석하고, Linear Regression과 ARIMA를 활용하여 향후 5년간 서울의 여름 평균기온을 예측한다. 또한 분석 결과를 Streamlit 기반의 인터랙티브 대시보드로 구현하여 기간과 조건에 따라 결과를 탐색할 수 있도록 구성하였다.
 
-* 프로젝트 기간: 2026-08-19 ~ 2026-08-25
 * 분석 리포트: [REPORT.md](REPORT.md)
 * 대시보드 링크: [seoul-temperature-analysis.streamlit.app](https://seoul-temperature-analysis.streamlit.app/)
 
